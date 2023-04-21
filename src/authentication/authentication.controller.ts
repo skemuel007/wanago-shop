@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, Post, Req, Res, SerializeOptions, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -10,6 +10,10 @@ import { LogInDto } from './dto/log-in.dto';
 
 @ApiTags('authentication')
 @Controller('authentication')
+// @UseInterceptors(ClassSerializerInterceptor)
+@SerializeOptions({
+    strategy: 'excludeAll'
+})
 export class AuthenticationController {
     constructor(
         private readonly authenticationService: AuthenticationService
@@ -29,13 +33,15 @@ export class AuthenticationController {
     @ApiResponse({ status: 200, description: 'User logged in successfully'})
     @ApiResponse({ status: 400, description: 'Error occurred fetching user details'})
     @ApiResponse({ status: 500, description: 'Something went wrong'})
-    async login(@Req() request: RequestWithUser, @Res() response: Response) {
+    async login(@Req() request: RequestWithUser /*, @Res() response: Response */) {
         const {user} = request;
         const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
-        response.setHeader('Set-Cookie', cookie);
-        user.password = undefined;
-        // return user;
-        return response.send(user);
+        // response.setHeader('Set-Cookie', cookie);
+        request.res.setHeader('Set-Cookie', cookie);
+
+        // user.password = undefined;
+        return user;
+        // return response.send(user);
     }
 
     @UseGuards(JwtAuthenticationGuard)
