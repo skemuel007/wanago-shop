@@ -1,10 +1,10 @@
-export function RecursivelyStripNullValues(value: unknown): unknown {
+export function recursivelyStripNullValues(value: unknown): unknown {
     if (Array.isArray(value)) {
-        return value.map(RecursivelyStripNullValues);
+        return value.map(recursivelyStripNullValues);
     }
     if (value !== null && typeof value === 'object') {
         return Object.fromEntries(
-            Object.entries(value).map(([key, value]) => [key, RecursivelyStripNullValues(value)])
+            Object.entries(value).map(([key, value]) => [key, recursivelyStripNullValues(value)])
         );
     }
 

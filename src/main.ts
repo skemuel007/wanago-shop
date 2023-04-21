@@ -1,9 +1,9 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ExceptionLoggerFilter } from './utils/exception-logger.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +12,9 @@ async function bootstrap() {
   // app.useGlobalFilters(new ExceptionLoggerFilter(httpAdapter));
 
   app.useGlobalPipes(new ValidationPipe( { skipMissingProperties: true }));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(
+    app.get(Reflector)
+  ));
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
