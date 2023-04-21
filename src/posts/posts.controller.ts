@@ -4,6 +4,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from 'src/authentication/jwt-authentication.guard';
+import { FindOnePrams } from 'src/utils/find-one-prams';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -21,7 +22,8 @@ export class PostsController {
     @Get(':id')
     @ApiResponse({ status: 200, description: ''})
     @ApiResponse({ status: 404, description: 'Post not found'})
-    getPostById(@Param('id') id: string) {
+    // getPostById(@Param('id') id: string) {
+    getPostById(@Param() { id }: FindOnePrams) {
         return this.postsService.getPostById(Number(id));
     }
 

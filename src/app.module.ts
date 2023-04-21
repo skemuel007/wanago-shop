@@ -7,6 +7,8 @@ import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { APP_FILTER } from '@nestjs/core';
+import { ExceptionLoggerFilter } from './utils/exception-logger.filter';
 
 @Module({
   imports: [PostsModule, ConfigModule.forRoot({
@@ -26,6 +28,12 @@ import { AuthenticationModule } from './authentication/authentication.module';
   AuthenticationModule,
 ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionLoggerFilter
+    }
+  ],
 })
 export class AppModule {}
