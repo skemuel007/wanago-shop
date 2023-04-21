@@ -34,7 +34,7 @@ export class PostsController {
     @ApiResponse({ status: 200, description: ''})
     @ApiResponse({ status: 404, description: 'Post not found'})
     async replacePost(@Param('id') id: string, @Body() post: UpdatePostDto) {
-        return this.postsService.replacePost(Number(id), post);
+        return this.postsService.updatePost(Number(id), post);
     }
 
     @Delete(':id')
